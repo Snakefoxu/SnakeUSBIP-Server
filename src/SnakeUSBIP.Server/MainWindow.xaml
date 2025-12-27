@@ -1,0 +1,208 @@
+﻿<Window x:Class="SnakeUSBIP.Server.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="🐍 SnakeUSBIP Server" 
+        Height="600" Width="850"
+        MinHeight="400" MinWidth="600"
+        WindowStartupLocation="CenterScreen"
+        Background="#1a1a2e">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        
+        <!-- Theme Colors -->
+        <SolidColorBrush x:Key="BgPrimary" Color="#1a1a2e"/>
+        <SolidColorBrush x:Key="BgSecondary" Color="#16213e"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#0f3460"/>
+        <SolidColorBrush x:Key="HighlightColor" Color="#e94560"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#eaeaea"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#a0a0a0"/>
+        
+        <!-- Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource HighlightColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- DataGrid Style -->
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="{StaticResource BgSecondary}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowBackground" Value="{StaticResource BgSecondary}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource AccentColor}"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+        </Style>
+        
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        
+        <Style TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource BgSecondary}" Padding="20,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🐍" FontSize="26" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <StackPanel>
+                        <TextBlock Text="SnakeUSBIP Server" FontSize="18" FontWeight="Bold" 
+                                   Foreground="{StaticResource TextPrimary}"/>
+                        <TextBlock Text="GUI for usbipd-win" FontSize="11" 
+                                   Foreground="{StaticResource TextSecondary}"/>
+                    </StackPanel>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="🔄 Refresh" Style="{StaticResource ModernButton}" 
+                            Click="BtnRefresh_Click" Margin="0,0,8,0"/>
+                    <Button Content="🗑️ Uninstall Driver" Style="{StaticResource ModernButton}" 
+                            Click="BtnUninstall_Click" Background="#c0392b"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- Device List -->
+        <Border Grid.Row="1" Margin="15,15,15,8" Background="{StaticResource BgSecondary}" CornerRadius="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Border Background="{StaticResource AccentColor}" CornerRadius="8,8,0,0" Padding="12,8">
+                    <TextBlock Text="📱 USB Devices" FontSize="13" FontWeight="SemiBold" 
+                               Foreground="{StaticResource TextPrimary}"/>
+                </Border>
+                
+                <DataGrid x:Name="dgDevices" Grid.Row="1" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Bus ID" Binding="{Binding BusId}" Width="70"/>
+                        <DataGridTextColumn Header="VID:PID" Binding="{Binding VidPid}" Width="90"/>
+                        <DataGridTextColumn Header="Device Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
+                        <DataGridTemplateColumn Header="Action" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <Button Content="📤 Share" 
+                                                Click="BtnBind_Click"
+                                                Tag="{Binding BusId}"
+                                                Visibility="{Binding IsNotShared, Converter={StaticResource BoolToVis}}"
+                                                Padding="6,3" FontSize="11"
+                                                Background="#27ae60" Foreground="White" 
+                                                BorderThickness="0" Cursor="Hand"/>
+                                        <Button Content="🚫 Stop" 
+                                                Click="BtnUnbind_Click"
+                                                Tag="{Binding BusId}"
+                                                Visibility="{Binding IsExported, Converter={StaticResource BoolToVis}}"
+                                                Padding="6,3" FontSize="11"
+                                                Background="#e74c3c" Foreground="White" 
+                                                BorderThickness="0" Cursor="Hand"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+        
+        <!-- Log Panel -->
+        <Border Grid.Row="2" Margin="15,8,15,8" Background="{StaticResource BgSecondary}" CornerRadius="8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Border Background="{StaticResource AccentColor}" CornerRadius="8,8,0,0" Padding="12,8">
+                    <Grid>
+                        <TextBlock Text="📋 Log" FontSize="13" FontWeight="SemiBold" 
+                                   Foreground="{StaticResource TextPrimary}"/>
+                        <Button Content="Clear" HorizontalAlignment="Right" 
+                                Style="{StaticResource ModernButton}" 
+                                Padding="8,2" FontSize="10"
+                                Click="BtnClearLog_Click"/>
+                    </Grid>
+                </Border>
+                
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <TextBox x:Name="txtLog" 
+                             Background="Transparent" 
+                             Foreground="{StaticResource TextPrimary}"
+                             BorderThickness="0"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap"
+                             FontFamily="Consolas"
+                             FontSize="11"
+                             Padding="12,8"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+        
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Background="{StaticResource BgSecondary}" Padding="15,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal">
+                    <Ellipse x:Name="statusIndicator" Width="8" Height="8" Fill="#e74c3c" Margin="0,0,8,0"/>
+                    <TextBlock x:Name="txtStatus" Text="Checking..." 
+                               Foreground="{StaticResource TextSecondary}" FontSize="11"/>
+                </StackPanel>
+                
+                <TextBlock Grid.Column="2" x:Name="txtDeviceCount" Text="0 device(s)" 
+                           Foreground="{StaticResource TextSecondary}" FontSize="11"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
