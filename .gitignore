@@ -1,5 +1,58 @@
-bin/
-obj/
-*.user
+# ========================================
+# .gitignore - SnakeUSBIP-Server
+# Synced with Global SnakeFoxu Rules
+# ========================================
+
+# ============ RUTAS LOCALES / NUGET ============
+**/obj/**/*.json
+**/obj/**/*.dgspec.json
+**/obj/**/*.assets.json
+**/obj/**/project.assets.json
+*.nuget.dgspec.json
+*.sourcelink.json
+
+# ============ BUILD ARTIFACTS ============
+**/bin/
+**/obj/
+**/out/
+publish/
+release/
+*.exe
+*.dll
 *.pdb
+*.cache
+
+# ============ LOGS ============
+*.log
+logs/
+
+# ============ OS FILES ============
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ============ IDE ============
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 .vs/
+
+# ============ INTERNAL ============
+.agent/
+.gemini/
+backups/
+*_backup*
+
+# ============ SECURITY ============
+Publish-Release.ps1
+**/RESTORE_EMERGENCY.ps1
+**/CREATE_BACKUP.ps1
+
+# ============ TEMP ============
+*.tmp
+*.temp
+~$*
