@@ -4,6 +4,7 @@
 // Licensed under GPL v3 - See LICENSE file
 // ═══════════════════════════════════════════════════════════════════════════════
 
+using System.Security.Principal;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -40,7 +41,28 @@ public partial class MainWindow : Window
 
         // Initial load
         Log("🐍 SnakeUSBIP Server v2.0 - GUI for usbipd-win");
+        LogService.Info("MainWindow initialized");
+        UpdateBadges();
         CheckDriverAndRefresh();
+    }
+
+    private void UpdateBadges()
+    {
+        // Admin Badge
+        bool isAdmin = IsRunningAsAdmin();
+        adminBadge.Background = new SolidColorBrush(isAdmin ? Color.FromRgb(39, 174, 96) : Color.FromRgb(231, 76, 60));
+        txtAdminStatus.Text = isAdmin ? "ADMIN" : "USER";
+
+        // Mode Badge
+        modeBadge.Background = new SolidColorBrush(PathService.IsPortable ? Color.FromRgb(52, 152, 219) : Color.FromRgb(155, 89, 182));
+        txtModeStatus.Text = PathService.IsPortable ? "PORTABLE" : "INSTALLED";
+    }
+
+    private static bool IsRunningAsAdmin()
+    {
+        using var identity = WindowsIdentity.GetCurrent();
+        var principal = new WindowsPrincipal(identity);
+        return principal.IsInRole(WindowsBuiltInRole.Administrator);
     }
 
     private async void CheckDriverAndRefresh()
@@ -48,19 +70,36 @@ public partial class MainWindow : Window
         if (!_driverInstaller.IsUsbipdInstalled())
         {
             Log("⚠️ usbipd-win not installed");
-            Log("📦 Installing driver automatically...");
             
-            var success = await _driverInstaller.InstallUsbipdAsync();
-            if (success)
+            // Ask user before installing
+            var result = MessageBox.Show(
+                "El driver usbipd-win no está instalado.\n\n" +
+                "Este driver es necesario para compartir dispositivos USB por red.\n\n" +
+                "¿Desea instalar el driver ahora?",
+                "Driver no encontrado",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
             {
-                Log("✅ usbipd-win installed successfully!");
-                // Reinitialize the service to detect the new installation
-                _usbipdService.Reinitialize();
-                Log("🔄 Service reinitialized");
+                Log("📦 Installing driver...");
+                var success = await _driverInstaller.InstallUsbipdAsync();
+                if (success)
+                {
+                    Log("✅ usbipd-win installed successfully!");
+                    _usbipdService.Reinitialize();
+                    Log("🔄 Service reinitialized");
+                }
+                else
+                {
+                    Log("❌ Failed to install. Please run as administrator.");
+                    return;
+                }
             }
             else
             {
-                Log("❌ Failed to install. Please run as administrator.");
+                Log("ℹ️ Driver installation skipped by user");
+                Log("⚠️ USB sharing functionality will not be available");
                 return;
             }
         }
@@ -111,6 +150,17 @@ public partial class MainWindow : Window
     private void BtnClearLog_Click(object sender, RoutedEventArgs e)
     {
         txtLog.Clear();
+    }
+
+    private void BtnDiagnostics_Click(object sender, RoutedEventArgs e)
+    {
+        string diagnostics = PathService.GetDiagnosticReport();
+        if (LogService.CurrentLogFile != null)
+        {
+            diagnostics += $"\nCurrent Log: {LogService.CurrentLogFile}";
+        }
+        MessageBox.Show(diagnostics, "SnakeUSBIP Diagnostics", MessageBoxButton.OK, MessageBoxImage.Information);
+        Log("🔍 Diagnostics displayed");
     }
 
     private void BtnBind_Click(object sender, RoutedEventArgs e)

@@ -86,14 +86,30 @@
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock Text="🐍" FontSize="26" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <StackPanel>
-                        <TextBlock Text="SnakeUSBIP Server" FontSize="18" FontWeight="Bold" 
-                                   Foreground="{StaticResource TextPrimary}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="SnakeUSBIP Server" FontSize="18" FontWeight="Bold" 
+                                       Foreground="{StaticResource TextPrimary}"/>
+                            <!-- Admin Indicator -->
+                            <Border x:Name="adminBadge" Background="#27ae60" CornerRadius="3" 
+                                    Padding="6,2" Margin="10,0,0,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="txtAdminStatus" Text="ADMIN" FontSize="9" FontWeight="Bold" 
+                                           Foreground="White"/>
+                            </Border>
+                            <!-- Mode Indicator -->
+                            <Border x:Name="modeBadge" Background="#3498db" CornerRadius="3" 
+                                    Padding="6,2" Margin="6,0,0,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="txtModeStatus" Text="PORTABLE" FontSize="9" FontWeight="Bold" 
+                                           Foreground="White"/>
+                            </Border>
+                        </StackPanel>
                         <TextBlock Text="GUI for usbipd-win" FontSize="11" 
                                    Foreground="{StaticResource TextSecondary}"/>
                     </StackPanel>
                 </StackPanel>
                 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="🔍 Diagnostics" Style="{StaticResource ModernButton}" 
+                            Click="BtnDiagnostics_Click" Margin="0,0,8,0" Background="#9b59b6"/>
                     <Button Content="🔄 Refresh" Style="{StaticResource ModernButton}" 
                             Click="BtnRefresh_Click" Margin="0,0,8,0"/>
                     <Button Content="🗑️ Uninstall Driver" Style="{StaticResource ModernButton}" 

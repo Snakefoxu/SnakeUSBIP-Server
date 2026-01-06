@@ -9,7 +9,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>SnakeUSBIP-Server</AssemblyName>
     <RootNamespace>SnakeUSBIP.Server</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Company>SnakeFoxu</Company>
     <Authors>SnakeFoxu</Authors>
     <Copyright>Copyright (c) 2025 SnakeFoxu</Copyright>
@@ -17,6 +17,7 @@
     <Description>USB/IP Server for Windows - Share USB devices over network</Description>
     <RepositoryUrl>https://github.com/SnakeFoxu/SnakeUSBIP-Server</RepositoryUrl>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

@@ -178,11 +178,19 @@ public class UsbipdService : IDisposable
     /// </summary>
     public bool BindDevice(string busId)
     {
-        Log($"📤 Sharing device {busId}...");
-        var result = RunAdminCommand($"bind --busid={busId} --force");
+        // Validate input to prevent command injection
+        if (!SecurityHelper.IsValidBusId(busId))
+        {
+            Log($"❌ Invalid Bus ID format: {busId}");
+            return false;
+        }
+
+        var sanitizedBusId = SecurityHelper.SanitizeArgument(busId);
+        Log($"📤 Sharing device {sanitizedBusId}...");
+        var result = RunAdminCommand($"bind --busid={sanitizedBusId} --force");
         if (result)
         {
-            Log($"✅ Device {busId} is now shared");
+            Log($"✅ Device {sanitizedBusId} is now shared");
         }
         return result;
     }
@@ -192,11 +200,19 @@ public class UsbipdService : IDisposable
     /// </summary>
     public bool UnbindDevice(string busId)
     {
-        Log($"🚫 Stopping share for {busId}...");
-        var result = RunAdminCommand($"unbind --busid={busId}");
+        // Validate input to prevent command injection
+        if (!SecurityHelper.IsValidBusId(busId))
+        {
+            Log($"❌ Invalid Bus ID format: {busId}");
+            return false;
+        }
+
+        var sanitizedBusId = SecurityHelper.SanitizeArgument(busId);
+        Log($"🚫 Stopping share for {sanitizedBusId}...");
+        var result = RunAdminCommand($"unbind --busid={sanitizedBusId}");
         if (result)
         {
-            Log($"✅ Device {busId} is no longer shared");
+            Log($"✅ Device {sanitizedBusId} is no longer shared");
         }
         return result;
     }
