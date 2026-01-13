@@ -246,26 +246,14 @@ public class UsbipdService : IDisposable
                 FileName = _usbipdPath,
                 Arguments = args,
                 UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
                 CreateNoWindow = true
             };
 
-            // Only request elevation if we're NOT already admin
-            if (!IsRunningAsAdmin())
-            {
-                psi.UseShellExecute = true;
-                psi.Verb = "runas";
-                psi.RedirectStandardOutput = false;
-                psi.RedirectStandardError = false;
-                psi.CreateNoWindow = false;
-            }
-
-            using var process = Process.Start(psi);
-            if (process == null) return false;
-
-            process.WaitForExit(30000);
-            return process.ExitCode == 0;
+            // Ya estamos como admin (manifest), ejecutar directamente
+            Process.Start(psi);
+            
+            // Fire & Forget: no esperamos, el auto-refresh actualizará el estado
+            return true;
         }
         catch (Exception ex)
         {

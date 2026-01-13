@@ -1,5 +1,18 @@
 # CHANGELOG - SnakeUSBIP Server
 
+## [1.1.1] - 2026-01-13
+
+### Fixed
+- **Instant Share/Stop** ⚡
+  - Share and Stop buttons now respond instantly (was 16+ seconds)
+  - UI no longer freezes during operations
+  - Fire & Forget architecture with auto-refresh
+
+### Technical
+- Refactored `RunAdminCommand` to non-blocking execution
+- Auto-refresh (3s) updates device state automatically
+
+---
 ## [1.1.0] - 2026-01-06
 
 ### Added
