@@ -102,18 +102,34 @@
                                            Foreground="White"/>
                             </Border>
                         </StackPanel>
-                        <TextBlock Text="GUI for usbipd-win" FontSize="11" 
+                        <TextBlock x:Name="txtSubtitle" Text="GUI for usbipd-win" FontSize="11" 
                                    Foreground="{StaticResource TextSecondary}"/>
                     </StackPanel>
                 </StackPanel>
                 
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="🔍 Diagnostics" Style="{StaticResource ModernButton}" 
-                            Click="BtnDiagnostics_Click" Margin="0,0,8,0" Background="#9b59b6"/>
-                    <Button Content="🔄 Refresh" Style="{StaticResource ModernButton}" 
-                            Click="BtnRefresh_Click" Margin="0,0,8,0"/>
-                    <Button Content="🗑️ Uninstall Driver" Style="{StaticResource ModernButton}" 
-                            Click="BtnUninstall_Click" Background="#c0392b"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <!-- Row 1: Language, Theme, Update, Settings -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,4">
+                        <Button x:Name="btnLanguage" Content="🌐 EN" Style="{StaticResource ModernButton}" 
+                                Click="BtnLanguage_Click" Margin="0,0,6,0" Background="#2980b9" Width="60" Padding="4,3"/>
+                        <Button x:Name="btnTheme" Content="🌙" Style="{StaticResource ModernButton}" 
+                                Click="BtnTheme_Click" Margin="0,0,6,0" Background="#8e44ad" Width="36" Padding="4,3"/>
+                        <Button x:Name="btnUpdate" Content="⬆️" Style="{StaticResource ModernButton}" 
+                                Click="BtnUpdate_Click" Margin="0,0,6,0" Background="#16a085" Width="36" Padding="4,3" ToolTip="Check for Updates"/>
+                        <Button x:Name="btnSettings" Content="⚙️" Style="{StaticResource ModernButton}" 
+                                Click="BtnSettings_Click" Margin="0,0,6,0" Background="#34495e" Width="36" Padding="4,3" ToolTip="Settings"/>
+                        <Button x:Name="btnTray" Content="🔽" Style="{StaticResource ModernButton}" 
+                                Click="BtnMinimizeToTray_Click" Background="#2c3e50" Width="36" Padding="4,3" ToolTip="Minimize to Tray"/>
+                    </StackPanel>
+                    <!-- Row 2: Diagnostics, Refresh, Uninstall -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="btnDiagnostics" Content="🔍 Diagnostics" Style="{StaticResource ModernButton}" 
+                                Click="BtnDiagnostics_Click" Margin="0,0,6,0" Background="#9b59b6" Padding="8,3"/>
+                        <Button x:Name="btnRefresh" Content="🔄 Refresh" Style="{StaticResource ModernButton}" 
+                                Click="BtnRefresh_Click" Margin="0,0,6,0" Padding="8,3"/>
+                        <Button x:Name="btnUninstall" Content="🗑️ Uninstall" Style="{StaticResource ModernButton}" 
+                                Click="BtnUninstall_Click" Background="#c0392b" Padding="8,3"/>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
         </Border>
@@ -137,11 +153,21 @@
                           SelectionMode="Single"
                           CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Bus ID" Binding="{Binding BusId}" Width="70"/>
-                        <DataGridTextColumn Header="VID:PID" Binding="{Binding VidPid}" Width="90"/>
-                        <DataGridTextColumn Header="Device Name" Binding="{Binding Name}" Width="*"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
-                        <DataGridTemplateColumn Header="Action" Width="100">
+                        <DataGridTextColumn Header="🔌" Binding="{Binding Icon}" Width="35"/>
+                        <DataGridTextColumn Header="Bus ID" Binding="{Binding BusId}" Width="60"/>
+                        <DataGridTextColumn Header="VID:PID" Binding="{Binding VidPid}" Width="85"/>
+                        <DataGridTemplateColumn Header="Device Name" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" 
+                                               ToolTip="{Binding Description}"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Type" Binding="{Binding TypeName}" Width="90"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80"/>
+                        <DataGridTemplateColumn Header="Action" Width="90">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

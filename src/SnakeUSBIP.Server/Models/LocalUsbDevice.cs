@@ -36,5 +36,14 @@ public class LocalUsbDevice
     /// <summary>VID:PID formatted string</summary>
     public string VidPid => $"{VendorId:X4}:{ProductId:X4}";
 
+    /// <summary>Icon for the device type</summary>
+    public string Icon => Services.DeviceIconHelper.GetIcon(VendorId, ProductId, Description);
+
+    /// <summary>Friendly type name</summary>
+    public string TypeName => Services.DeviceIconHelper.GetTypeName(VendorId, ProductId, Description);
+
+    /// <summary>Display name with icon</summary>
+    public string DisplayName => $"{Icon} {Name}";
+
     public override string ToString() => $"{BusId}: {Name} ({VidPid})";
 }

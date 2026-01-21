@@ -1,5 +1,64 @@
 # CHANGELOG - SnakeUSBIP Server
 
+## [2.0.0] - 2026-01-21
+
+### Added
+- **Settings System** ⚙️
+  - New Settings window with comprehensive configuration
+  - Persistent JSON-based settings storage
+  - Import/Export config backup functionality
+  - Reset to defaults option
+
+- **System Tray Integration** 🔽
+  - App minimizes to system tray automatically
+  - Context menu for quick access (Open/Exit)
+  - Balloon notifications on minimize
+  - "To Tray" dedicated button
+
+- **Device Icons** 🎮
+  - Smart icon detection based on VID/PID
+  - Category icons: 🖱️⌨️🎮💾📱🎧📹🔌
+  - Device type column (Keyboard, Mouse, Storage, etc.)
+  - Tooltips showing full device description
+
+- **Firewall Helper** 🛡️
+  - One-click Windows Firewall configuration
+  - Creates rule for USB/IP port 3240
+  - Status indicator in Settings
+  - Rule removal option
+
+- **Start with Windows** 🚀
+  - Optional auto-start on Windows boot
+  - Start minimized option
+  - Registry-based startup registration
+
+- **Performance Overhaul** ⚡
+  - Asynchronous core for non-blocking UI
+  - Smart WMI Caching (30s duration, >90% CPU reduction)
+  - Configurable refresh interval (1-60 seconds)
+
+- **Auto Update** ⬆️
+  - Check for updates from GitHub releases
+  - One-click download and install
+  - Secure validation of download sources
+
+- **Localization** 🌐
+  - Full Spanish (ES) and English (EN) support
+  - Auto-detect system language
+  - Toggle language with one click
+
+- **Themes** 🎨
+  - Light and Dark theme support
+  - Windows 11 style Light theme
+  - VS Code Dark+ Professional Dark theme
+  - Theme preference saved to settings
+
+### Changed
+- Refactored entire codebase to Async/Await pattern
+- Enhanced DataGrid with icons, types, and tooltips
+- Version bumped to 2.0.0
+
+---
 ## [1.1.1] - 2026-01-13
 
 ### Fixed

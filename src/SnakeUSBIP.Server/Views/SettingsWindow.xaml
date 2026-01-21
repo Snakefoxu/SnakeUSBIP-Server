@@ -1,0 +1,155 @@
+<Window x:Class="SnakeUSBIP.Server.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="⚙️ Settings - SnakeUSBIP Server" 
+        Height="550" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#1a1a2e">
+    
+    <Window.Resources>
+        <!-- Theme Colors -->
+        <SolidColorBrush x:Key="BgPrimary" Color="#1a1a2e"/>
+        <SolidColorBrush x:Key="BgSecondary" Color="#16213e"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#0f3460"/>
+        <SolidColorBrush x:Key="HighlightColor" Color="#e94560"/>
+        <SolidColorBrush x:Key="TextPrimary" Color="#eaeaea"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#a0a0a0"/>
+        
+        <!-- Section Header Style -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource HighlightColor}"/>
+            <Setter Property="Margin" Value="0,15,0,8"/>
+        </Style>
+        
+        <!-- CheckBox Style -->
+        <Style TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="Margin" Value="0,6"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        
+        <!-- Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentColor}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="5" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource HighlightColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource BgSecondary}" Padding="20,15">
+            <StackPanel>
+                <TextBlock Text="⚙️ Settings" FontSize="20" FontWeight="Bold" 
+                           Foreground="{StaticResource TextPrimary}"/>
+                <TextBlock Text="Configure SnakeUSBIP Server preferences" FontSize="11" 
+                           Foreground="{StaticResource TextSecondary}"/>
+            </StackPanel>
+        </Border>
+        
+        <!-- Settings Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20,10">
+            <StackPanel>
+                
+                <!-- GENERAL -->
+                <TextBlock Text="🏠 GENERAL" Style="{StaticResource SectionHeader}"/>
+                <CheckBox x:Name="chkStartWithWindows" Content="Start with Windows"/>
+                <CheckBox x:Name="chkStartMinimized" Content="Start minimized to System Tray"/>
+                <CheckBox x:Name="chkShowNotifications" Content="Show balloon notifications"/>
+                <CheckBox x:Name="chkCheckUpdates" Content="Check for updates on startup"/>
+                
+                <!-- AUTO-BIND -->
+                <TextBlock Text="🔗 AUTO-BIND (Optional)" Style="{StaticResource SectionHeader}"/>
+                <CheckBox x:Name="chkAutoBind" Content="Enable Auto-Bind for saved devices"/>
+                <TextBlock Text="When enabled, saved devices will be automatically shared when connected." 
+                           FontSize="10" Foreground="{StaticResource TextSecondary}" 
+                           TextWrapping="Wrap" Margin="20,0,0,0"/>
+                
+                <!-- SECURITY -->
+                <TextBlock Text="🔒 SECURITY" Style="{StaticResource SectionHeader}"/>
+                <CheckBox x:Name="chkWhitelist" Content="Enable IP Whitelist"/>
+                <CheckBox x:Name="chkRequirePIN" Content="Require PIN before sharing devices"/>
+                
+                <!-- NETWORK -->
+                <TextBlock Text="🌐 NETWORK" Style="{StaticResource SectionHeader}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,6">
+                    <Button x:Name="btnFirewall" Content="🛡️ Configure Firewall" 
+                            Style="{StaticResource ModernButton}" 
+                            Click="BtnFirewall_Click" Padding="15,8"/>
+                    <TextBlock x:Name="txtFirewallStatus" Text="Not configured" 
+                               VerticalAlignment="Center" Margin="15,0,0,0"
+                               Foreground="{StaticResource TextSecondary}" FontSize="11"/>
+                </StackPanel>
+                
+                <!-- ADVANCED -->
+                <TextBlock Text="⚙️ ADVANCED" Style="{StaticResource SectionHeader}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,6">
+                    <TextBlock Text="Refresh interval:" VerticalAlignment="Center" 
+                               Foreground="{StaticResource TextPrimary}" FontSize="12"/>
+                    <TextBox x:Name="txtRefreshInterval" Width="50" Margin="10,0" 
+                             Text="3" TextAlignment="Center"
+                             Background="{StaticResource BgSecondary}" 
+                             Foreground="{StaticResource TextPrimary}"
+                             BorderBrush="{StaticResource AccentColor}"/>
+                    <TextBlock Text="seconds" VerticalAlignment="Center" 
+                               Foreground="{StaticResource TextSecondary}" FontSize="12"/>
+                </StackPanel>
+                
+                <!-- IMPORT/EXPORT -->
+                <TextBlock Text="💾 BACKUP" Style="{StaticResource SectionHeader}"/>
+                <StackPanel Orientation="Horizontal" Margin="0,6">
+                    <Button x:Name="btnExport" Content="📤 Export" 
+                            Style="{StaticResource ModernButton}" 
+                            Click="BtnExport_Click" Padding="15,8" Margin="0,0,10,0"/>
+                    <Button x:Name="btnImport" Content="📥 Import" 
+                            Style="{StaticResource ModernButton}" 
+                            Click="BtnImport_Click" Padding="15,8"/>
+                </StackPanel>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <!-- Footer Buttons -->
+        <Border Grid.Row="2" Background="{StaticResource BgSecondary}" Padding="20,15">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Reset to Defaults" Style="{StaticResource ModernButton}" 
+                        Click="BtnReset_Click" Padding="15,10" Margin="0,0,10,0"
+                        Background="#7f8c8d"/>
+                <Button Content="Cancel" Style="{StaticResource ModernButton}" 
+                        Click="BtnCancel_Click" Padding="15,10" Margin="0,0,10,0"
+                        Background="#95a5a6"/>
+                <Button Content="💾 Save" Style="{StaticResource ModernButton}" 
+                        Click="BtnSave_Click" Padding="20,10"
+                        Background="#27ae60"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

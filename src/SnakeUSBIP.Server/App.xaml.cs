@@ -14,7 +14,7 @@ namespace SnakeUSBIP.Server;
 /// <summary>
 /// Main application class with robust exception handling.
 /// </summary>
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -53,11 +53,11 @@ public partial class App : Application
         LogService.Exception(e.Exception, "UI Thread");
 
         // Show user-friendly error dialog
-        MessageBox.Show(
+        System.Windows.MessageBox.Show(
             $"An unexpected error occurred:\n\n{e.Exception.Message}\n\nThe error has been logged.",
             "SnakeUSBIP Error",
-            MessageBoxButton.OK,
-            MessageBoxImage.Error);
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Error);
 
         // Mark as handled to prevent crash (unless critical)
         e.Handled = true;
